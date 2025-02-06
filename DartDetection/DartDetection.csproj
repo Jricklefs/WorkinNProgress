@@ -1,0 +1,74 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="AIModels\ds_frozen_model\**" />
+    <EmbeddedResource Remove="AIModels\ds_frozen_model\**" />
+    <None Remove="AIModels\ds_frozen_model\**" />
+    <Page Remove="AIModels\ds_frozen_model\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="AIModels\dart_seg.h5" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Microsoft.ML" Version="3.0.1" />
+	  <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.19.2" />
+	  <PackageReference Include="Microsoft.ML.OnnxTransformer" Version="3.0.1" />
+	  <PackageReference Include="Microsoft.ML.TensorFlow" Version="3.0.1" />
+	  <PackageReference Include="OpenCvSharp4" Version="4.10.0.20240616" />
+	  <PackageReference Include="OpenCvSharp4.Extensions" Version="4.10.0.20240616" />
+	  <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.10.0.20240616" />
+	  <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.10.0.20240616" />
+	  <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.16.0" />
+	  <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="DartboardConfigPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="AIModels\dartSegGS.onnx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AIModels\dart_segmentation_144_unet_grayscale_saved_model_TF\fingerprint.pb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AIModels\dart_segmentation_144_unet_grayscale_saved_model_TF\saved_model.pb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AIModels\dart_segmentation_144_unet_grayscale_saved_model_TF\variables\variables.data-00000-of-00001">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AIModels\dart_segmentation_144_unet_grayscale_saved_model_TF\variables\variables.index">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AIModels\frozen\frozen_model.pb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="AIModels\output_model.onnx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\PerfectDartboard.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Polar_graph_paper.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Polar_graph_paper.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

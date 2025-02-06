@@ -1,0 +1,64 @@
+﻿<Window x:Class="DartDetection.DartboardDetectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Dartboard Detection" Height="600" Width="800"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <!-- Define rows: one for image display, one for controls -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <!-- Image display -->
+            <RowDefinition Height="Auto" />
+            <!-- Control section -->
+        </Grid.RowDefinitions>
+
+        <!-- Image Display Section -->
+        <Border Grid.Row="0" BorderBrush="Black" BorderThickness="1" Margin="10">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Image Name="DartboardImage" Stretch="Uniform" />
+            </ScrollViewer>
+        </Border>
+
+        <!-- Controls Section -->
+        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="10">
+            <!-- Action Buttons -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                <Button Content="Select Image" Width="120" Margin="5" Click="SelectImageButton_Click" />
+                <Button Content="Process Image" Width="120" Margin="5" Click="ProcessImageButton_Click" />
+                <Button Content="Reset" Width="120" Margin="5" Click="ResetButton_Click" />
+            </StackPanel>
+
+            <!-- Sliders for Tuning Parameters -->
+            <GroupBox Header="Detection Parameters" Margin="10">
+                <StackPanel Orientation="Vertical">
+                    <!-- Hough Circles dp -->
+                    <TextBlock Text="Hough Circles dp" Margin="5,5,0,0" />
+                    <Slider Name="DpSlider" Minimum="0.5" Maximum="2.0" Value="1.2" TickFrequency="0.1" 
+                            IsSnapToTickEnabled="True" Margin="10,0" ValueChanged="Slider_ValueChanged" />
+                    <TextBlock Text="{Binding ElementName=DpSlider, Path=Value, StringFormat=dp: {0:F1}}" Margin="10,0" />
+
+                    <!-- Minimum Distance Between Circles -->
+                    <TextBlock Text="Min Distance Between Circles" Margin="5,5,0,0" />
+                    <Slider Name="MinDistSlider" Minimum="20" Maximum="200" Value="50" TickFrequency="10" 
+                            IsSnapToTickEnabled="True" Margin="10,0" ValueChanged="Slider_ValueChanged" />
+                    <TextBlock Text="{Binding ElementName=MinDistSlider, Path=Value, StringFormat=MinDist: {0:F0}}" Margin="10,0" />
+
+                    <!-- Canny Edge Param1 -->
+                    <TextBlock Text="Canny Edge Param1" Margin="5,5,0,0" />
+                    <Slider Name="Param1Slider" Minimum="50" Maximum="200" Value="100" TickFrequency="10" 
+                            IsSnapToTickEnabled="True" Margin="10,0" ValueChanged="Slider_ValueChanged" />
+                    <TextBlock Text="{Binding ElementName=Param1Slider, Path=Value, StringFormat=Param1: {0:F0}}" Margin="10,0" />
+
+                    <!-- HoughCircles Param2 -->
+                    <TextBlock Text="HoughCircles Param2" Margin="5,5,0,0" />
+                    <Slider Name="Param2Slider" Minimum="10" Maximum="100" Value="30" TickFrequency="5" 
+                            IsSnapToTickEnabled="True" Margin="10,0" ValueChanged="Slider_ValueChanged" />
+                    <TextBlock Text="{Binding ElementName=Param2Slider, Path=Value, StringFormat=Param2: {0:F0}}" Margin="10,0" />
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Progress Bar for Processing -->
+            <ProgressBar Name="ProcessingProgressBar" Height="20" Margin="10" Visibility="Collapsed" />
+        </StackPanel>
+    </Grid>
+</Window>

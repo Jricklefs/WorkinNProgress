@@ -1,0 +1,30 @@
+﻿<Window x:Class="DartDetection.BaselineImageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Baseline Image" Height="450" Width="800">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <ItemsControl Name="ImagesPanel" ItemsSource="{Binding CameraBaselines}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="5">
+                            <Label Content="{Binding CameraLabel}" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <Image Source="{Binding BaselineImage}" Stretch="Uniform"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Margin="5">
+                            <Label Content="Calibrated Baseline" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <Image Source="{Binding CalibratedBaselineImage}" Stretch="Uniform"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
+</Window>

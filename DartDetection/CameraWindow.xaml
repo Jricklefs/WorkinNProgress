@@ -1,0 +1,71 @@
+﻿<Window x:Class="DartDetection.CameraWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CameraWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Name="CaptureImageButton" Content="Capture Image" Click="CaptureImage_Click" Width="100" Margin="5"/>
+            <Button Name="UploadImageButton" Content="Upload Image" Click="UploadImage_Click" Width="100" Margin="5"/>
+            <!-- New Button -->
+            <CheckBox Name="BaselineCheckbox" Content="Enable Baseline Comparison" Checked="BaselineCheckbox_Checked" Unchecked="BaselineCheckbox_Unchecked" Margin="5"/>
+            <Slider Name="ThresholdSlider1" Minimum="0" Maximum="10" Value="5" TickFrequency="0.1" IsSnapToTickEnabled="True" Margin="5" HorizontalAlignment="Center" Width="150" ValueChanged="ThresholdSlider_ValueChanged"/>
+            <Label Name="ThresholdLabel1" Content="Threshold: 5.00" HorizontalAlignment="Center" Margin="5"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1">
+            <!--<CheckBox Name="EnableInferenceCheckbox" Content="Enable Inference" Margin="5"/>-->
+            <Label Name="DifferencePercentageLabel" Content="Difference: 0%" Margin="5"/>
+            <Label Name="SaveCounterLabel" Content="Save Counter: 0" Margin="5"/>
+            <!--<Label Name="ComparisonLabel" Content="Comparing: None" Margin="5"/>-->
+            <CheckBox x:Name="TrackingCheckbox" Content="Enable Tracking" Checked="TrackingCheckbox_Checked" Unchecked="TrackingCheckbox_Unchecked"/>
+        </StackPanel>
+
+        <!-- Container for the camera feeds -->
+        <Grid Grid.Row="2" Name="CameraGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Camera Feed 1 with Difference Label, Slider, and Value Label -->
+            <StackPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Name="CameraFeed1" Stretch="Uniform" MouseLeftButtonDown="CameraFeed_Click" Height="150"/>
+                <Label Name="DifferenceLabel1" Content="Difference: 0.00%" HorizontalAlignment="Center"/>
+
+            </StackPanel>
+
+            <!-- Camera Feed 2 with Difference Label, Slider, and Value Label -->
+            <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Name="CameraFeed2" Stretch="Uniform" MouseLeftButtonDown="CameraFeed_Click" Height="150"/>
+                <Label Name="DifferenceLabel2" Content="Difference: 0.00%" HorizontalAlignment="Center"/>
+
+            </StackPanel>
+
+            <!-- Camera Feed 3 with Difference Label, Slider, and Value Label -->
+            <StackPanel Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Name="CameraFeed3" Stretch="Uniform" MouseLeftButtonDown="CameraFeed_Click" Height="150"/>
+                <Label Name="DifferenceLabel3" Content="Difference: 0.00%" HorizontalAlignment="Center"/>
+
+            </StackPanel>
+
+            <!-- Camera Feed 4 with Difference Label, Slider, and Value Label -->
+            <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Name="CameraFeed4" Stretch="Uniform" MouseLeftButtonDown="CameraFeed_Click" Height="150"/>
+                <Label Name="DifferenceLabel4" Content="Difference: 0.00%" HorizontalAlignment="Center"/>
+
+            </StackPanel>
+        </Grid>
+
+        <!-- Expanded camera feed (will be hidden initially) -->
+        <Image Name="ExpandedCameraFeed" Grid.Row="1" Visibility="Collapsed" Stretch="Uniform" MouseLeftButtonDown="ExpandedCameraFeed_Click"/>
+    </Grid>
+</Window>
