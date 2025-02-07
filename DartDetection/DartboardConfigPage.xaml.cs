@@ -163,24 +163,48 @@ namespace DartDetection
         {
             if (isPolarGraphVisible)
             {
-                // Validate that exactly 4 polar points are captured.
-                if (polarReferencePoints.Count != 4)
+                // Ensure exactly 2 points are captured before calculating the square
+                if (polarReferencePoints.Count != 2)
                 {
-                    MessageBox.Show("You must capture exactly 4 points for the Polar Graph before saving.",
+                    MessageBox.Show("You must capture exactly 2 points for the Polar Graph before saving.",
                                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                // Convert the captured polar points to your settings model (PointData).
+                // Retrieve the two selected points
+                Point2f topLeft = polarReferencePoints[0];
+                Point2f bottomRight = polarReferencePoints[1];
+
+                // Calculate the width and height
+                float width = Math.Abs(bottomRight.X - topLeft.X);
+                float height = Math.Abs(bottomRight.Y - topLeft.Y);
+
+                // Ensure it forms a perfect square (use the larger of width/height)
+                float sideLength = Math.Max(width, height);
+
+                // Adjust bottomRight to ensure a square
+                bottomRight = new Point2f(topLeft.X + sideLength, topLeft.Y + sideLength);
+
+                // Compute the remaining two points
+                Point2f topRight = new Point2f(topLeft.X + sideLength, topLeft.Y);
+                Point2f bottomLeft = new Point2f(topLeft.X, topLeft.Y + sideLength);
+
+                // Update the list with all four points
+                polarReferencePoints.Clear();
+                polarReferencePoints.Add(topLeft);
+                polarReferencePoints.Add(topRight);
+                polarReferencePoints.Add(bottomLeft);
+                polarReferencePoints.Add(bottomRight);
+                
+
+                // Convert the calculated square points to the settings model
                 var polarPoints = polarReferencePoints.Select(p => new PointData { X = p.X, Y = p.Y }).ToList();
 
-                // Update your settings.
+                // Save the points into settings
                 _appSettings.PolarGraphPoints = polarPoints;
-
-                // Save the settings.
                 SettingsManager.SaveSettings(_appSettings);
 
-                MessageBox.Show("Polar Graph settings saved successfully.",
+                MessageBox.Show("Polar Graph settings saved successfully with a perfect square.",
                                 "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
@@ -359,12 +383,12 @@ namespace DartDetection
             // Crop the image to the detected outer perimeter   <--<-- Not necessary. ???
             //Mat croppedDartboard = CropToOuterPerimeter(warpedImage, outerPerimeter);
             //Cv2.ImShow("cropped TO Permeter Dartboard", croppedDartboard);
-            
+
             //// Resize to match Polar Graph size  <-- Not necessary. ???
             //resizedDartboard = new Mat();
             //Cv2.Resize(croppedDartboard, resizedDartboard, new OpenCvSharp.Size(polarBaseSize, polarBaseSize));
             //Cv2.ImShow("Resize To PolarGraph", croppedDartboard);
-         
+
             //OpenCvSharp.Mat dartboardWithCoordinates = DrawScoringSystem(resizedDartboard);
 
 
@@ -596,14 +620,17 @@ namespace DartDetection
 
             if (isPolarGraphVisible)
             {
-                polarReferencePoints.Add(cvPoint);
-                DrawMarker(clickPosition, Colors.Blue); // Blue markers for polar reference points.
-
-                if (polarReferencePoints.Count == 4)
+                if (polarReferencePoints.Count < 2)
                 {
-                    SaveSettingsButton.IsEnabled = true;
-                    MessageBox.Show("Captured 4 reference points on the Polar Graph image.",
+                    polarReferencePoints.Add(cvPoint);
+                    DrawMarker(clickPosition, Colors.Blue);
+                }
+
+                if (polarReferencePoints.Count == 2)
+                {
+                    MessageBox.Show("Captured 2 points on the Polar Graph. Click Save to generate a square.",
                                     "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    SaveSettingsButton.IsEnabled = true; // Enable Save button
                 }
             }
             else
