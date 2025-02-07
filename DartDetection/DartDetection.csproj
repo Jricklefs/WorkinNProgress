@@ -60,6 +60,33 @@
     <None Update="AIModels\output_model.onnx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Images\Calibrate\sa_Camera1_278a20d5-fa18-4409-b430-57c24533b862.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Calibrate\sa_Camera1_72fc1e2f-c013-40cd-89d5-694c7b7156f3.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Calibrate\sa_Camera1_742f9c55-a0aa-421c-abce-1b9ca77605ce.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Calibrate\sa_Camera1_796eb406-d53e-423b-9d06-a2071398ee0a.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Calibrate\sa_Camera1_86500611-fdf8-43fe-b69a-6415986aa3d5.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Calibrate\sa_Camera1_b5fd9050-fa03-462c-8ed1-5534a17b9982.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Calibrate\sa_Camera1_ea481df5-2a82-483d-84a7-8c57dec119e0.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Calibrate\sa_Camera1_eb6fb881-e99b-497a-9568-a46391278d6d.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Calibrate\sa_Camera1_fdeeb404-afa1-4a14-a5da-be26df791e13.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Images\PerfectDartboard.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

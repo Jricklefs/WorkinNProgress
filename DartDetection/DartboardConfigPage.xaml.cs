@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -242,10 +243,43 @@ namespace DartDetection
                                 "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
+
+
             // Optionally, disable the Save button until further changes occur.
             SaveSettingsButton.IsEnabled = false;
         }
 
+        private void ConfigureCameraButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //
+                //string imageDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _appSettings.PolarGraphImagePath);
+                string imageDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "images/Calibrate");
+               
+
+        
+                OpenCvSharp.Size patternSize = new OpenCvSharp.Size(10, 7);  // ✅ Adjust based on your checkerboard pattern
+
+                using (CameraCalibrator calibrator = new CameraCalibrator())
+                {
+                    bool success = calibrator.CalibrateCamera(imageDirectory, patternSize);
+
+                    if (success)
+                    {
+                        MessageBox.Show("Camera calibration completed successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Camera calibration failed. Please check your images.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Calibration Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
 
         // Upload Image button loads the dartboard (source) image.
@@ -343,6 +377,12 @@ namespace DartDetection
                 return;
             }
 
+            // ✅ First, remove radial distortion
+            Mat undistortedImage = CorrectRadialDistortion(dartboardMat);
+
+            Cv2.ImShow("Undistorted", undistortedImage);
+            Cv2.WaitKey(0);
+
             // Compute the perspective transformation from source points to polar reference points.
             Mat transformMatrix = Cv2.GetPerspectiveTransform(sourcePoints.ToArray(), polarReferencePoints.ToArray());
 
@@ -352,17 +392,20 @@ namespace DartDetection
 
 
             Mat warpedImage = new Mat();
-            Cv2.WarpPerspective(dartboardMat, warpedImage, transformMatrix, new OpenCvSharp.Size(outputWidth, outputHeight));
+            Cv2.WarpPerspective(undistortedImage, warpedImage, transformMatrix, new OpenCvSharp.Size(outputWidth, outputHeight));
 
             // Overlay a checkerboard pattern
-            Mat chkforDIstortion = warpedImage.Clone();
-            Mat checkerboardOverlay = GenerateCheckerboard(outputWidth, outputHeight);
-            Cv2.AddWeighted(chkforDIstortion, 0.7, checkerboardOverlay, 0.3, 0, chkforDIstortion); // Blend 70% image, 30% checkerboard
+            //Mat chkforDIstortion = warpedImage.Clone();
+            //Mat checkerboardOverlay = GenerateCheckerboard(outputWidth, outputHeight);
+            //Cv2.AddWeighted(chkforDIstortion, 0.7, checkerboardOverlay, 0.3, 0, chkforDIstortion); // Blend 70% image, 30% checkerboard
 
 
-            // Visualize distortion using the checkerboard overlay
-            Cv2.ImShow("Warped with Checkerboard", chkforDIstortion);
-            Cv2.WaitKey(0);
+            //// Visualize distortion using the checkerboard overlay
+            //Cv2.ImShow("Warped with Checkerboard", chkforDIstortion);
+            //Cv2.WaitKey(0);
+
+            //Mat afterwords = new Mat();
+            //afterwords = CorrectDartboard(chkforDIstortion, sourcePoints);
 
 
             // Detect the outer perimeter
@@ -400,7 +443,89 @@ namespace DartDetection
             MessageBox.Show("Perspective transformation applied.");
         }
 
-        private Mat GenerateCheckerboard(int width, int height, int squareSize = 40)
+
+
+
+        public Mat CorrectPerspective(Mat inputImage, List<Point2f> sourcePoints)
+        {
+            if (sourcePoints.Count != 4)
+            {
+                MessageBox.Show("Exactly 4 points are required for perspective correction.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return inputImage;
+            }
+
+            // Define the destination points as a perfect square (expected corrected output)
+            float size = 500; // Target size of the corrected image
+            List<Point2f> destinationPoints = new List<Point2f>
+            {
+                new Point2f(0, 0),           // Top-left
+                new Point2f(size, 0),        // Top-right
+                  new Point2f(0, size)  ,       // Bottom-left
+                new Point2f(size, size)     // Bottom-right
+            };
+
+            // Compute the perspective transformation matrix
+            Mat transformMatrix = Cv2.GetPerspectiveTransform(sourcePoints.ToArray(), destinationPoints.ToArray());
+
+            // Apply the transformation
+            Mat correctedImage = new Mat();
+            Cv2.WarpPerspective(inputImage, correctedImage, transformMatrix, new OpenCvSharp.Size(size, size));
+
+            return correctedImage;
+        }
+
+
+
+
+
+
+            public Mat CorrectRadialDistortion(Mat inputImage)
+        {
+            if (_appSettings.CameraMatrix == null || _appSettings.DistCoeffs == null)
+            {
+                Console.WriteLine("Error: Camera calibration data is missing.");
+                return inputImage; // Return original image if no calibration data
+            }
+
+            // ✅ Convert jagged array back to Mat
+            Mat cameraMatrix = new Mat(3, 3, MatType.CV_64F);
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    cameraMatrix.Set(i, j, _appSettings.CameraMatrix[i][j]);
+                }
+            }
+
+            Mat distCoeffs = new Mat(1, _appSettings.DistCoeffs.Length, MatType.CV_64F);
+            distCoeffs.SetArray(_appSettings.DistCoeffs);
+
+            // ✅ Apply undistortion
+            Mat undistortedImage = new Mat();
+            Cv2.Undistort(inputImage, undistortedImage, cameraMatrix, distCoeffs);
+
+            return undistortedImage;
+        }
+
+
+
+
+
+
+
+        public Mat CorrectDartboard(Mat inputImage, List<Point2f> sourcePoints)
+        {
+            // Step 1: Remove radial distortion
+            Mat undistorted = CorrectRadialDistortion(inputImage);
+
+            // Step 2: Correct perspective
+            Mat alignedImage = CorrectPerspective(undistorted, sourcePoints);
+
+            return alignedImage;
+        }
+
+
+        public  Mat GenerateCheckerboard(int width, int height, int squareSize = 40)
         {
             Mat checkerboard = new Mat(height, width, MatType.CV_8UC3, Scalar.White);
 
@@ -602,13 +727,14 @@ namespace DartDetection
         private OpenCvSharp.Mat GetEdges(OpenCvSharp.Mat grayImage)
         {
             var filtered = new OpenCvSharp.Mat();
-            Cv2.BilateralFilter(grayImage, filtered, 9, 75, 75); // Reduce noise while preserving edges
+            Cv2.BilateralFilter(grayImage, filtered, 9, 100, 100); // Reduce noise while preserving edges
 
             // Adaptive thresholding
             var thresholded = new OpenCvSharp.Mat();
             Cv2.AdaptiveThreshold(filtered, thresholded, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.Binary, 11, 2);
 
             return thresholded;
+
         }
 
 

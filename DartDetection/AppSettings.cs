@@ -21,5 +21,9 @@ namespace DartDetection
         // A collection of camera settings. Each camera can have its own set of 4 source points.
         public List<CameraSettings> Cameras { get; set; } = new List<CameraSettings>();
 
+        // ✅ Camera Calibration Data
+        public double[][] CameraMatrix { get; set; } = new double[3][];
+        public double[] DistCoeffs { get; set; } = new double[5];
+
     }
 }

@@ -57,6 +57,8 @@
             <Button Content="Transform Image" Click="TransformButton_Click" Width="180" Margin="5"/>
             <Button x:Name="SaveSettingsButton" Content="Save" Click="SaveSettingsButton_Click" Width="180" Margin="5" IsEnabled="False"/>
             <Button Content="Clear Points" Click="ClearPointsButton_Click" Width="180" Margin="5"/>
+            <Button Content="Configure Camera" Click="ConfigureCameraButton_Click" Width="180" Margin="5"/>
+            <!-- ✅ New Button -->
 
             <!-- Adjust Grid Offsets -->
             <TextBlock Text="Adjust Grid" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="10"/>
