@@ -90,9 +90,10 @@ namespace DartDetection
                 return;
             }
 
-            //OpenCvSharp.Mat dartboardWithGrid = DrawScoringSystem(resizedDartboard);
+            OpenCvSharp.Mat dartboardWithGrid = DrawScoringSystem(resizedDartboard);
+
             //DartboardImage.Source = OpenCvSharp.WpfExtensions.BitmapSourceConverter.ToBitmapSource(dartboardWithGrid);
-            DartboardImage.Source = OpenCvSharp.WpfExtensions.BitmapSourceConverter.ToBitmapSource(resizedDartboard);
+            DartboardImage.Source = OpenCvSharp.WpfExtensions.BitmapSourceConverter.ToBitmapSource(dartboardWithGrid);
         }
 
         // Settings button loads the Polar Graph image.
@@ -381,18 +382,18 @@ namespace DartDetection
 
 
             // Crop the image to the detected outer perimeter   <--<-- Not necessary. ???
-            //Mat croppedDartboard = CropToOuterPerimeter(warpedImage, outerPerimeter);
-            //Cv2.ImShow("cropped TO Permeter Dartboard", croppedDartboard);
+            Mat croppedDartboard = CropToOuterPerimeter(warpedImage, outerPerimeter);
+            Cv2.ImShow("cropped TO Permeter Dartboard", croppedDartboard);
 
-            //// Resize to match Polar Graph size  <-- Not necessary. ???
-            //resizedDartboard = new Mat();
-            //Cv2.Resize(croppedDartboard, resizedDartboard, new OpenCvSharp.Size(polarBaseSize, polarBaseSize));
-            //Cv2.ImShow("Resize To PolarGraph", croppedDartboard);
+            // Resize to match Polar Graph size  <-- Not necessary. ???
+            resizedDartboard = new Mat();
+            Cv2.Resize(croppedDartboard, resizedDartboard, new OpenCvSharp.Size(polarBaseSize, polarBaseSize));
+            Cv2.ImShow("Resize To PolarGraph", croppedDartboard);
 
-            //OpenCvSharp.Mat dartboardWithCoordinates = DrawScoringSystem(resizedDartboard);
+            OpenCvSharp.Mat dartboardWithCoordinates = DrawScoringSystem(resizedDartboard);
 
-
-            OpenCvSharp.Mat dartboardWithCoordinates = DrawScoringSystem(warpedImage);
+            RedrawDartboard();
+            //OpenCvSharp.Mat dartboardWithCoordinates = DrawScoringSystem(croppedDartboard);
 
             DartboardImage.Source = BitmapSourceConverter.ToBitmapSource(dartboardWithCoordinates);
 
