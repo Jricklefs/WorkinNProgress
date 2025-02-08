@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using DartDetection.Models;
+using DartDetection.Utilities;
 using OpenCvSharp;
 using OpenCvSharp.Internal.Vectors;
 using OpenCvSharp.WpfExtensions;
@@ -303,8 +304,8 @@ namespace DartDetection
                     MessageBox.Show("Failed to load the selected image.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-
-                Mat undistortedMat = CorrectRadialDistortion(dartboardMat);
+                // Use global utility method to correct radial distortion
+                Mat undistortedMat = ImageProcessingHelper.CorrectRadialDistortion(dartboardMat);
 
                 // Display the loaded image.
                 DartboardImage.Source = BitmapSourceConverter.ToBitmapSource(undistortedMat);

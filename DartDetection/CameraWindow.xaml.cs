@@ -1,6 +1,7 @@
 ﻿//using Microsoft.ML.OnnxRuntime;
 //using Microsoft.ML.OnnxRuntime.Tensors;
 using DartDetection.Model_Logic;
+using DartDetection.Utilities;
 using Microsoft.ML;
 using Microsoft.Win32;
 using OpenCvSharp;
@@ -102,6 +103,9 @@ namespace DartDetection
             _baselineImages = new Mat[MaxCameras];
             _calibratedBaselineImages = new Mat[MaxCameras];
 
+
+            ImageProcessingHelper.LoadCalibrationSettings();
+
             for (int i = 0; i < MaxCameras; i++)
             {
                 _captures[i] = new VideoCapture(i);
@@ -136,6 +140,8 @@ namespace DartDetection
 
             if (openFileDialog.ShowDialog() == true)
             {
+                
+
                 string imagePath = openFileDialog.FileName;
                 bool dartDetected = await DetectDartInImage(new Mat(imagePath));
 
@@ -654,9 +660,13 @@ namespace DartDetection
                         {
                             if (_frames[i] != null && !_frames[i].Empty())
                             {
+
+                                // ✅ Apply distortion correction before saving the image
+                                Mat correctedFrame = ImageProcessingHelper.CorrectRadialDistortion(_frames[i]);
+
                                 if (i == 0)
                                 {
-                                    bool dartDetected = await DetectDartInImage(_frames[i]);
+                                    bool dartDetected = await DetectDartInImage(correctedFrame);
 
                                     if (dartDetected)
                                     {
@@ -664,7 +674,7 @@ namespace DartDetection
                                     }
                                 }
 
-                                _capturedFrames[i] = _frames[i].Clone();
+                                _capturedFrames[i] = correctedFrame.Clone();
                             }
                         }
 
