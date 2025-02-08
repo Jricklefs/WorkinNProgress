@@ -176,6 +176,9 @@ namespace DartDetection
                 // Retrieve the two selected points
                 Point2f topLeft = polarReferencePoints[0];
                 Point2f bottomRight = polarReferencePoints[1];
+                //Point2f topLeft = new Point2f(100,100 );
+                //Point2f bottomRight = new Point2f(600, 600);
+
 
                 // Calculate the width and height
                 float width = Math.Abs(bottomRight.X - topLeft.X);
@@ -394,20 +397,6 @@ namespace DartDetection
             Mat warpedImage = new Mat();
             Cv2.WarpPerspective(undistortedImage, warpedImage, transformMatrix, new OpenCvSharp.Size(outputWidth, outputHeight));
 
-            // Overlay a checkerboard pattern
-            //Mat chkforDIstortion = warpedImage.Clone();
-            //Mat checkerboardOverlay = GenerateCheckerboard(outputWidth, outputHeight);
-            //Cv2.AddWeighted(chkforDIstortion, 0.7, checkerboardOverlay, 0.3, 0, chkforDIstortion); // Blend 70% image, 30% checkerboard
-
-
-            //// Visualize distortion using the checkerboard overlay
-            //Cv2.ImShow("Warped with Checkerboard", chkforDIstortion);
-            //Cv2.WaitKey(0);
-
-            //Mat afterwords = new Mat();
-            //afterwords = CorrectDartboard(chkforDIstortion, sourcePoints);
-
-
             // Detect the outer perimeter
             RotatedRect outerPerimeter = new RotatedRect();
             try
@@ -424,19 +413,9 @@ namespace DartDetection
 
 
 
-            // Crop the image to the detected outer perimeter   <--<-- Not necessary. ???
-            Mat croppedDartboard = CropToOuterPerimeter(warpedImage, outerPerimeter);
-            Cv2.ImShow("cropped TO Permeter Dartboard", croppedDartboard);
-
-            // Resize to match Polar Graph size  <-- Not necessary. ???
-            resizedDartboard = new Mat();
-            Cv2.Resize(croppedDartboard, resizedDartboard, new OpenCvSharp.Size(polarBaseSize, polarBaseSize));
-            Cv2.ImShow("Resize To PolarGraph", croppedDartboard);
-
-            OpenCvSharp.Mat dartboardWithCoordinates = DrawScoringSystem(resizedDartboard);
-
+            resizedDartboard = warpedImage;
             RedrawDartboard();
-            //OpenCvSharp.Mat dartboardWithCoordinates = DrawScoringSystem(croppedDartboard);
+            OpenCvSharp.Mat dartboardWithCoordinates = DrawScoringSystem(warpedImage);
 
             DartboardImage.Source = BitmapSourceConverter.ToBitmapSource(dartboardWithCoordinates);
 
@@ -717,8 +696,6 @@ namespace DartDetection
                 throw new InvalidOperationException("Failed to detect the outer perimeter.");
             }
 
-            // **New Method Call: Extract and Save the Region Inside the Largest Contour**
-           // ExtractAndSaveContourRegion(image, largestContour);
 
             return Cv2.FitEllipse(largestContour);
         }

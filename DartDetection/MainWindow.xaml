@@ -40,6 +40,15 @@
             VerticalAlignment="Center"
             Margin="5"
             Click="CameraFeedButton_Click" />
+
+
+            <Button Content="ZooFly" 
+            Width="200" 
+            Height="50" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center"
+            Margin="5"
+            Click="ZooFly_Click" />
         </StackPanel>
     </Grid>
 </Window>

@@ -36,5 +36,11 @@ namespace DartDetection
             CameraFeedWindow configPage = new CameraFeedWindow();
             configPage.Show();
         }
+        private void ZooFly_Click(object sender, RoutedEventArgs e)
+        {
+            ZF2 configPage = new ZF2();
+            configPage.Show();
+        }
+
     }
 }
