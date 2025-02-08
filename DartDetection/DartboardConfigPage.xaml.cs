@@ -304,8 +304,10 @@ namespace DartDetection
                     return;
                 }
 
+                Mat undistortedMat = CorrectRadialDistortion(dartboardMat);
+
                 // Display the loaded image.
-                DartboardImage.Source = BitmapSourceConverter.ToBitmapSource(dartboardMat);
+                DartboardImage.Source = BitmapSourceConverter.ToBitmapSource(undistortedMat);
 
                 // Clear any previously captured source points and markers.
                 sourcePoints.Clear();
